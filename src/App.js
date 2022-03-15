@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import './App.css';
 
 function App() {
   const [inputValue, setInputValue] = useState("")
+  const [countdownTimer, setCountdownTimer] = useState(5)
 
   //HANDLES INPUT CHANGE
   const handleInputChange = (e) => {
@@ -23,6 +24,16 @@ function App() {
     // return wordArray.filter(eachWord => eachWord !== "").length
   }
 
+  useEffect(() => {
+    setTimeout(() => {
+      if (countdownTimer !== 0) {
+        setCountdownTimer((prev) => {
+          return prev - 1
+        })
+      }  
+    }, 1000)
+  }, [countdownTimer])
+
   return (
     <div>
       <h1>TITLE</h1>
@@ -30,7 +41,7 @@ function App() {
           value={inputValue}
           onChange={handleInputChange}
       /> 
-      <h4>Time remaining: </h4>
+      <h4>Time remaining: {countdownTimer}</h4>
       <button onClick={() => console.log(calculateWordCount(inputValue))}>Start Game</button>
       <h1>Total amount of word you typed: </h1>
     </div>
