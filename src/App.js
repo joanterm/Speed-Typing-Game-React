@@ -4,6 +4,7 @@ import './App.css';
 function App() {
   const [inputValue, setInputValue] = useState("")
   const [countdownTimer, setCountdownTimer] = useState(5)
+  const [isCountingDown, setIsCountingDown] = useState(false)
 
   //HANDLES INPUT CHANGE
   const handleInputChange = (e) => {
@@ -14,6 +15,7 @@ function App() {
 
   //REMOVES WHITESPACE IF USER PRESSES SPACE ON KEYBOARD, SPLITS A STRING INTO AN ARRAY, RETURNS 0 IF THERE ARE NO WORDS TYPED IN
   const calculateWordCount = (word) => {
+    setIsCountingDown(true)
     if (word === "") {
       return 0
     } else {
@@ -24,15 +26,20 @@ function App() {
     // return wordArray.filter(eachWord => eachWord !== "").length
   }
 
+  //SETS EFFFECT SO COUNTDOWN GOES DOWN EACH SECOND AND STOPS AT 0 WHEN BUTTON IS CLICKED
   useEffect(() => {
-    setTimeout(() => {
-      if (countdownTimer !== 0) {
-        setCountdownTimer((prev) => {
-          return prev - 1
-        })
-      }  
-    }, 1000)
-  }, [countdownTimer])
+      setTimeout(() => {
+        if (isCountingDown && countdownTimer !== 0) {
+          setCountdownTimer((prev) => {
+            return prev - 1
+          })
+        } else {
+          setIsCountingDown(false)
+        }  
+      }, 1000)
+  }, [countdownTimer, isCountingDown])
+
+  console.log(isCountingDown)
 
   return (
     <div>
