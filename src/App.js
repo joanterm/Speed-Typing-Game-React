@@ -3,8 +3,9 @@ import './App.css';
 
 function App() {
   const [inputValue, setInputValue] = useState("")
-  const [countdownTimer, setCountdownTimer] = useState(5)
+  const [countdownTimer, setCountdownTimer] = useState(2)
   const [isCountingDown, setIsCountingDown] = useState(false)
+  const [displayWordCount, setDisplayWordCount] = useState(0)
 
   //HANDLES INPUT CHANGE
   const handleInputChange = (e) => {
@@ -15,31 +16,42 @@ function App() {
 
   //REMOVES WHITESPACE IF USER PRESSES SPACE ON KEYBOARD, SPLITS A STRING INTO AN ARRAY, RETURNS 0 IF THERE ARE NO WORDS TYPED IN
   const calculateWordCount = (word) => {
-    setIsCountingDown(true)
     if (word === "") {
       return 0
     } else {
-      return word.trim().split(" ").length
+      return word.trim().split(" ").length    
     }
     //OR:
     // const wordArray = word.trim().split(" ")
     // return wordArray.filter(eachWord => eachWord !== "").length
   }
 
-  //SETS EFFFECT SO COUNTDOWN GOES DOWN EACH SECOND AND STOPS AT 0 WHEN BUTTON IS CLICKED
+  const startGameEachTime = () => {
+    setIsCountingDown(true)
+    calculateWordCount(inputValue)
+    setCountdownTimer(2)
+    setInputValue("")
+    setDisplayWordCount(0)
+  }
+
+  const endGame = () => {
+    setIsCountingDown(false)
+    const numberOfWords = calculateWordCount(inputValue)
+    setDisplayWordCount(numberOfWords)
+  }
+
+  //SETS EFFFECT SO COUNTDOWN GOES DOWN EACH SECOND AND STOPS AT 0 AFTER THE BUTTON IS CLICKED, ALLOWS FOR DISPLAY OF COUNTED WORDS
   useEffect(() => {
-      setTimeout(() => {
-        if (isCountingDown && countdownTimer !== 0) {
+      if (isCountingDown && countdownTimer !== 0) {
+        setTimeout(() => {
           setCountdownTimer((prev) => {
             return prev - 1
-          })
-        } else {
-          setIsCountingDown(false)
-        }  
+        })
       }, 1000)
+      } else if (countdownTimer === 0){
+        endGame()
+      }  
   }, [countdownTimer, isCountingDown])
-
-  console.log(isCountingDown)
 
   return (
     <div>
@@ -47,10 +59,11 @@ function App() {
       <textarea 
           value={inputValue}
           onChange={handleInputChange}
+          disabled={!isCountingDown}
       /> 
       <h4>Time remaining: {countdownTimer}</h4>
-      <button onClick={() => console.log(calculateWordCount(inputValue))}>Start Game</button>
-      <h1>Total amount of word you typed: </h1>
+      <button onClick={startGameEachTime} disabled={isCountingDown}>Start Game</button>
+      <h1>Total amount of word you typed: {displayWordCount}</h1>
     </div>
   );
 }
