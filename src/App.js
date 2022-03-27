@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import './App.css';
 
 function App() {
@@ -6,6 +6,7 @@ function App() {
   const [countdownTimer, setCountdownTimer] = useState(2)
   const [isCountingDown, setIsCountingDown] = useState(false)
   const [displayWordCount, setDisplayWordCount] = useState(0)
+  const inputFocus = useRef(null)
 
   //HANDLES INPUT CHANGE
   const handleInputChange = (e) => {
@@ -27,6 +28,9 @@ function App() {
   }
 
   const startGameEachTime = () => {
+    //NEED TO DISABLE FIRST AS SETISCOUNTING DOWN IS DISABLED WHEN !isCountingDown ON TEXT AREA
+    inputFocus.current.disabled = false
+    inputFocus.current.focus()
     setIsCountingDown(true)
     calculateWordCount(inputValue)
     setCountdownTimer(2)
@@ -60,6 +64,7 @@ function App() {
           value={inputValue}
           onChange={handleInputChange}
           disabled={!isCountingDown}
+          ref={inputFocus}
       /> 
       <h4>Time remaining: {countdownTimer}</h4>
       <button onClick={startGameEachTime} disabled={isCountingDown}>Start Game</button>
